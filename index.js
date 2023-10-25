@@ -40,7 +40,10 @@ const writeFile = (filename, data) => {
 app.get('/', (req, res) => {
     readFile('./tasks.json')
     .then(tasks => {
-        res.render('index.ejs', {tasks: tasks})
+        res.render('index.ejs', {
+            tasks: tasks,
+            error: null
+        })
     })
 })
 
@@ -60,6 +63,17 @@ app.get('/delete-task/:taskId', (req, res) => {
 })
 
 app.post('/', (req, res) => {
+    let error = null
+    if (req.body.task.trim().length === 0) {
+        error = 'Please insert correct task data'
+        readFile('./tasks.json')
+        .then(tasks => {
+            res.render('index.ejs', {
+                tasks: tasks,
+                error: error
+            })
+        })
+    } else {
     readFile('./tasks.json')
         .then(tasks => {
             let index
@@ -78,6 +92,7 @@ app.post('/', (req, res) => {
             writeFile('tasks.json', data)
             res.redirect('/')
         })
+    }
 })
 
 app.get('/delete-tasks', (req, res) => {
