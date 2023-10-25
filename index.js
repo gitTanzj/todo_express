@@ -80,6 +80,19 @@ app.post('/', (req, res) => {
         })
 })
 
+app.get('/delete-tasks', (req, res) => {
+    // reads the file
+    readFile('./tasks.json')
+        .then(tasks => {
+            // empties the list from all elements
+            tasks.splice(0, tasks.length)
+            // writes the empty list to the json file and redirects the client to the index page
+            data = JSON.stringify(tasks, null, 2)
+            writeFile('tasks.json', data)
+            res.redirect('/')
+        })
+})
+
 
 app.listen(3000, () => {
     console.log('app listening on port 3000')
